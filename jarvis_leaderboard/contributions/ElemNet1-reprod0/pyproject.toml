@@ -1,0 +1,22 @@
+[build-system]
+requires = [ "setuptools" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ElemNet1"
+description = "packaged ElemNet1"
+version = "1.0.0"
+dependencies = [
+  "numpy",
+  "lightgbm",
+  "pandas",
+  "tqdm",
+  "jarvis-tools",
+  "tensorflow",
+  "sklearn",
+  "ipython"
+]
+requires-python = ">=3.8"
+
+#[project.scripts]
+#run = "run"
