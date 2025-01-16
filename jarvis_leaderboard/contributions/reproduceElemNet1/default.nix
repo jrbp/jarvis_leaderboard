@@ -10,9 +10,10 @@
 
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python310;
-    libtensorflow = nixpkgs.libtensorflow; # hmmm
   };
 
+  # TODO: Refer to jarvis_leaderboard benchmark data by absolute path?
+  # TODO: use patches on ../ElemNet1 instead of copying and editing file here
   mkDerivation = {
     src = ./.;
     # following is a bad hack as the ipython magics only run when started with ipython
@@ -39,12 +40,6 @@
 
   overrides = {
     sklearn.env.SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL = "True";
-    tensorflow-io-gcs-filesystem = {
-      # these both build, but I'm not confident either is "correct"
-      #env.autoPatchelfIgnoreMissingDeps = ["libtensorflow_framework.so.2"];
-      mkDerivation.buildInputs = [
-        config.deps.libtensorflow
-      ];
-    };
+    tensorflow-io-gcs-filesystem.env.autoPatchelfIgnoreMissingDeps = ["libtensorflow_framework.so.2"];
   };
 }

@@ -33,16 +33,5 @@
         packagesDir = ./jarvis_leaderboard/contributions;
         packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
       });
-    # TODO: how to handle dev shells for each package
-    devShells = eachSystem (system: {
-      default = nixpkgs.legacyPackages.${system}.mkShell {
-        # inherit from the dream2nix generated dev shel
-        inputsFrom = [self.packages.${system}.reproduceElemNet1.devShell];
-        # add extra packages
-        packages = [
-          self.packages.${system}.reproduceElemNet1.config.deps.python.pkgs.ipython
-        ];
-      };
-    });
   };
 }
