@@ -1,0 +1,140 @@
+diff --git a/run.py b/run.py
+index ef91a62..64bab44 100644
+--- a/run.py
++++ b/run.py
+@@ -1,6 +1,19 @@
+ #!/usr/bin/env python
+ # coding: utf-8
+ 
++import sys
++import os
++from IPython import get_ipython
++TEST_RUN = True # epochs=3
++XDG_CACHE_DIR = os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache"))
++JARVIS_STORE_DIR = os.path.join(XDG_CACHE_DIR, "jarvis-tools")
++if not os.path.exists(JARVIS_STORE_DIR):
++    os.makedirs(JARVIS_STORE_DIR)
++if len(sys.argv) > 1:
++    BENCHMARK_DIR = os.path.abspath(sys.argv[1])
++else:
++    BENCHMARK_DIR = os.path.abspath("../../benchmarks") # unpatched behavior
++
+ # # ElemNet training
+ 
+ # # 1. SSUB
+@@ -10,7 +23,8 @@
+ 
+ #https://github.com/wolverton-research-group/qmpy/blob/master/qmpy/data/thermodata/ssub.dat
+ from jarvis.db.figshare import  get_request_data
+-dat = get_request_data(js_tag="ssub.json",url="https://figshare.com/ndownloader/files/40084921")
++dat = get_request_data(js_tag="ssub.json",url="https://figshare.com/ndownloader/files/40084921",
++                       store_dir=JARVIS_STORE_DIR)
+ 
+ 
+ # In[2]:
+@@ -31,7 +45,7 @@
+ 
+ import json,zipfile
+ import numpy as np
+-path = "../../benchmarks/AI/SinglePropertyPrediction/ssub_formula_energy.json.zip"
++path = os.path.join(BENCHMARK_DIR, "AI/SinglePropertyPrediction/ssub_formula_energy.json.zip")
+ js_tag = "ssub_formula_energy.json"
+ id_data = json.loads(zipfile.ZipFile(path).read(js_tag))
+ 
+@@ -186,7 +200,10 @@
+ # In[15]:
+ 
+ 
+-get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
++if TEST_RUN:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3, batch_size=32, callbacks=[es])\n')
++else:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
+ 
+ 
+ # In[16]:
+@@ -227,7 +244,8 @@
+ 
+ from jarvis.db.figshare import  get_request_data
+ import pandas as pd
+-dat = get_request_data(js_tag="supercon_chem.json",url="https://figshare.com/ndownloader/files/40719260")
++dat = get_request_data(js_tag="supercon_chem.json",url="https://figshare.com/ndownloader/files/40719260",
++                       store_dir=JARVIS_STORE_DIR)
+ #http://supercon.nims.go.jp/index_en.html
+ #https://github.com/vstanev1/Supercon
+ 
+@@ -245,7 +263,7 @@
+ 
+ import json,zipfile
+ import numpy as np
+-path = "../../benchmarks/AI/SinglePropertyPrediction/supercon_chem_Tc.json.zip"
++path = os.path.join(BENCHMARK_DIR, "AI/SinglePropertyPrediction/supercon_chem_Tc.json.zip")
+ js_tag = "supercon_chem_Tc.json"
+ id_data = json.loads(zipfile.ZipFile(path).read(js_tag))
+ train_ids = np.array(list(id_data['train'].keys()),dtype='int')
+@@ -289,7 +307,7 @@
+     X_test.append(desc)
+     y_test.append(ii['Tc'])
+     test_ids.append(ii['id'])
+-    
++
+ X_train=np.array(X_train,dtype='float')
+ y_train=np.array(y_train,dtype='float')
+ X_test=np.array(X_test,dtype='float')
+@@ -398,7 +416,10 @@
+ # In[25]:
+ 
+ 
+-get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
++if TEST_RUN:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3, batch_size=32, callbacks=[es])\n')
++else:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
+ 
+ 
+ # In[26]:
+@@ -433,12 +454,13 @@
+ import numpy as np
+ from jarvis.db.figshare import  get_request_data
+ import pandas as pd
+-dat = get_request_data(js_tag="mag2d_chem.json",url="https://figshare.com/ndownloader/files/40720004")
++dat = get_request_data(js_tag="mag2d_chem.json",url="https://figshare.com/ndownloader/files/40720004",
++                       store_dir=JARVIS_STORE_DIR)
+ #http://supercon.nims.go.jp/index_en.html
+ #https://github.com/vstanev1/Supercon
+ 
+ df = pd.DataFrame(dat)
+-path = "../../benchmarks/AI/SinglePropertyPrediction/mag2d_chem_magnetic_moment.json.zip"
++path = os.path.join(BENCHMARK_DIR, "AI/SinglePropertyPrediction/mag2d_chem_magnetic_moment.json.zip")
+ js_tag = "mag2d_chem_magnetic_moment.json"
+ id_data = json.loads(zipfile.ZipFile(path).read(js_tag))
+ train_ids = np.array(list(id_data['train'].keys()),dtype='int')
+@@ -488,7 +510,7 @@
+     X_test.append(desc)
+     y_test.append(ii['magnetic_moment'])
+     test_ids.append(ii['id'])
+-    
++
+ X_train=np.array(X_train,dtype='float')
+ y_train=np.array(y_train,dtype='float')
+ X_test=np.array(X_test,dtype='float')
+@@ -597,7 +619,10 @@
+ # In[35]:
+ 
+ 
+-get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
++if TEST_RUN:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3, batch_size=32, callbacks=[es])\n')
++else:
++    get_ipython().run_cell_magic('time', '', 'model.fit(X_train, y_train, verbose=2, validation_data=(X_val, y_val), epochs=3000, batch_size=32, callbacks=[es])\n')
+ 
+ 
+ # In[ ]:
+@@ -624,7 +649,3 @@
+ 
+ 
+ # In[ ]:
+-
+-
+-
+-

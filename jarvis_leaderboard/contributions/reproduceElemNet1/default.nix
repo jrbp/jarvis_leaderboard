@@ -10,18 +10,21 @@
 
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python310;
+    runElemNet1Patched = nixpkgs.runCommand "runElemNet1Patched" {} ''
+        mkdir -p $out
+        patch -o $out/run.py ${../ElemNet1/run.py} ${./runpy.patch}
+      '';
   };
-
-  # TODO: Refer to jarvis_leaderboard benchmark data by absolute path?
-  # TODO: use patches on ../ElemNet1 instead of copying and editing file here
   mkDerivation = {
     src = ./.;
-    # following is a bad hack as the ipython magics only run when started with ipython
-    installPhase = ''
+    # following is mainly needed because of the ipython magic commands
+    # though I'm currently using it to tell the script where the benchmarks data is
+    installPhase =
+      ''
       mkdir -p $out/bin
       cat > $out/bin/reproduceElemNet1 <<EOF
       #!/bin/sh
-      ${config.public.pyEnv}/bin/ipython ${./src/run.py}
+      ${config.public.pyEnv}/bin/ipython ${config.deps.runElemNet1Patched}/run.py ${../../benchmarks}
       EOF
       chmod +x $out/bin/reproduceElemNet1
     '';
