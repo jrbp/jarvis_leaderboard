@@ -14,7 +14,16 @@
   };
 
   mkDerivation = {
-    src = ./src;
+    src = ./.;
+    # following is a bad hack as the ipython magics only run when started with ipython
+    installPhase = ''
+      mkdir -p $out/bin
+      cat > $out/bin/reproduceElemNet1 <<EOF
+      #!/bin/sh
+      ${config.public.pyEnv}/bin/ipython ${./src/run.py}
+      EOF
+      chmod +x $out/bin/reproduceElemNet1
+    '';
   };
   pdm = {
     lockfile = ./pdm.lock;

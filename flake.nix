@@ -37,10 +37,10 @@
     devShells = eachSystem (system: {
       default = nixpkgs.legacyPackages.${system}.mkShell {
         # inherit from the dream2nix generated dev shel
-        inputsFrom = [self.packages.${system}.ElemNet1-reprod0.devShell];
+        inputsFrom = [self.packages.${system}.reproduceElemNet1.devShell];
         # add extra packages
         packages = [
-          self.packages.${system}.ElemNet1-reprod0.config.deps.python.pkgs.ipython
+          self.packages.${system}.reproduceElemNet1.config.deps.python.pkgs.ipython
         ];
       };
     });
