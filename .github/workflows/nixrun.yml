@@ -1,4 +1,4 @@
-name: "NixRun"
+name: NixRun
 jobs:
   elemnetrun:
     runs-on: ubuntu-latest
