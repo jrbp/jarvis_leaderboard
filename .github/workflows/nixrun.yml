@@ -1,8 +1,5 @@
 name: NixRun
-
 on: workflow_dispatch
-
-
 jobs:
   elemnetrun:
     runs-on: ubuntu-latest
