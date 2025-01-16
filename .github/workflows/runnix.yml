@@ -8,4 +8,4 @@ jobs:
     - uses: cachix/install-nix-action@v27
       with:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - run: nix run .#rerproduceElemNet1 > runlog
+    - run: nix run .#reproduceElemNet1 > runlog
